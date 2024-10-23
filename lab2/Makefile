@@ -111,6 +111,9 @@ KSRCDIR		+= kern/init \
 
 KCFLAGS		+= $(addprefix -I,$(KINCLUDE))
 
+#显式添加buddy.o
+OBJS += kern/mm/buddy_pmm.O
+
 ifeq ($(MAKECMDGOALS),test)
 $(call add_files_cc2,$(call listf_cc,$(KSRCDIR)),kernel,$(KCFLAGS))
 else

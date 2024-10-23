@@ -143,7 +143,43 @@ void pmm_init(void) {
     cprintf("satp virtual address: 0x%016lx\nsatp physical address: 0x%016lx\n", satp_virtual, satp_physical);
 }
 
+// static void check_alloc_page(void) {
+//     pmm_manager->check();
+//     cprintf("check_alloc_page() succeeded!\n");
+// }
+#define LOCAL_MAX_ORDER 10  // 根据 buddy_pmm 中的定义修改
+
 static void check_alloc_page(void) {
     pmm_manager->check();
+
+    cprintf("Running additional allocation tests...\n");
+
+    // 测试1：分配1页内存
+    struct Page *p1 = alloc_pages(1);
+    assert(p1 != NULL);
+    cprintf("Allocating 1 page, page address: %p\n", p1);
+
+    // 测试2：释放1页内存
+    free_pages(p1, 1);
+    cprintf("Freeing 1 page, page address: %p\n", p1);
+
+    // 测试3：分配2页内存
+    struct Page *p2 = alloc_pages(2);
+    assert(p2 != NULL);
+    cprintf("Allocating 2 pages, page address: %p\n", p2);
+
+    // 测试4：释放2页内存
+    free_pages(p2, 2);
+    cprintf("Freeing 2 pages, page address: %p\n", p2);
+
+    // 测试5：分配超过支持的最大内存块
+    struct Page *p_max = alloc_pages(1 << (LOCAL_MAX_ORDER + 1));  // 使用 LOCAL_MAX_ORDER
+    assert(p_max == NULL);
+    cprintf("Allocating too large memory block (should fail)\n");
+
+    // 释放最后的内存块
+    free_pages(p1, 1);
+    free_pages(p2, 2);
+
     cprintf("check_alloc_page() succeeded!\n");
 }

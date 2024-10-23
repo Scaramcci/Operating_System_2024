@@ -33,6 +33,7 @@ struct pmm_manager {
 };
 
 extern const struct pmm_manager *pmm_manager;
+//extern free_area_t free_area;
 
 void pmm_init(void);
 
